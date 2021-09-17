@@ -1,16 +1,25 @@
 import express from "express";
 import http from "http";
 import socket from "socket.io";
-import morgan from "morgan";
+
 import config from "./config";
+import setupMiddleware from "./middleware";
+import { connectDatabase } from "./db";
 
 const app = express();
 const server = http.createServer(app);
 const io = new socket.Server(server);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
+setupMiddleware(app);
+connectDatabase(config)
+    .then(() => console.log("Connected to database"))
+    .catch((error) => console.log("Error connecting to database..." + error));
+
+app.all("*", (req, res) => {
+    res.json({
+        ok: true,
+    });
+});
 
 io.on("connection", (socket) => {
     console.log("client connected");
