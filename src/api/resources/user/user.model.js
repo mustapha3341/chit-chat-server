@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { compareSync, genSaltSync, hashSync } from "bcryptjs";
 
 const userSchema = new Schema(
     {
@@ -17,5 +18,20 @@ const userSchema = new Schema(
     },
     { timestamps: true }
 );
+
+userSchema.methods = {
+    authenticate(plainTextPassword) {
+        return compareSync(plainTextPassword, this.password);
+    },
+
+    hashPassword(plainTextPassword) {
+        if (!plainTextPassword) {
+            throw new Error("Could not save user");
+        }
+
+        const salt = genSaltSync(12);
+        return hashSync(plainTextPassword, salt);
+    },
+};
 
 export default model("User", userSchema);
