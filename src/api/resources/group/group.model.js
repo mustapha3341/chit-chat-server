@@ -1,6 +1,6 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model } from "mongoose";
 
-const ObjectID = Types.ObjectId;
+const ObjectID = Schema.Types.ObjectId;
 
 const groupSchema = new Schema(
     {

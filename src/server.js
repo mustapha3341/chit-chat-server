@@ -5,6 +5,7 @@ import socket from "socket.io";
 import config from "./config";
 import setupMiddleware from "./middleware";
 import { connectDatabase } from "./db";
+import { restRouter } from "./api/resources/rest-router";
 
 const app = express();
 const server = http.createServer(app);
@@ -14,6 +15,8 @@ setupMiddleware(app);
 connectDatabase(config)
     .then(() => console.log("Connected to database"))
     .catch((error) => console.log("Error connecting to database..." + error));
+
+app.use("/api", restRouter);
 
 app.all("*", (req, res) => {
     res.json({
